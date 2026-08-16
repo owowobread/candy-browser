@@ -372,6 +372,7 @@ private enum class BrowserBackTarget {
 @Composable
 fun BrowserScreen(
     controller: BrowserController,
+    userScriptStore: dev.sk2andy.materialbrowser.data.UserScriptStore, // <-- ADD THIS LINE
     onTabOverviewPortraitLockChanged: (Boolean) -> Unit = {},
 ) {
     val currentTabOverviewPortraitLockChanged by rememberUpdatedState(
