@@ -146,6 +146,7 @@ internal fun SettingsScreen(
     onFilterStudio: () -> Unit,
     onClearData: () -> Unit,
     onOpenLegalUrl: (String) -> Unit,
+    onOpenUserScripts: () -> Unit, // <--- ADDED CALLBACK HERE
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -173,6 +174,7 @@ internal fun SettingsScreen(
                 SettingsDestination.Home -> SettingsHomePage(
                     downloadSummary = downloadSettings.displayName(externalDownloadManagers),
                     onDestinationChanged = onDestinationChanged,
+                    onOpenUserScripts = onOpenUserScripts, // <--- PASSED DOWN HERE
                     onDismiss = onDismiss,
                 )
 
@@ -259,6 +261,7 @@ internal fun SettingsScreen(
 private fun SettingsHomePage(
     downloadSummary: String,
     onDestinationChanged: (SettingsDestination) -> Unit,
+    onOpenUserScripts: () -> Unit, // <--- ADDED CALLBACK HERE
     onDismiss: () -> Unit,
 ) {
     SettingsPage(
@@ -299,6 +302,12 @@ private fun SettingsHomePage(
             title = stringResource(R.string.capsule_settings_title),
             subtitle = stringResource(R.string.settings_home_capsules_summary),
             onClick = { onDestinationChanged(SettingsDestination.SiteCapsules) },
+        )
+        SettingsPageSpacer()
+        SettingsLink( // <--- ADDED NEW MENU LINK HERE
+            title = "User Scripts",
+            subtitle = "Manage custom JavaScript injections",
+            onClick = onOpenUserScripts,
         )
         SettingsPageSpacer()
         SettingsLink(
