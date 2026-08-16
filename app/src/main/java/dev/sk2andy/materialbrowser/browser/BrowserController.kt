@@ -3559,7 +3559,12 @@ class BrowserController(
             injectCandyCosmeticFallback(tabId, view, url)
         }
 
-        override fun onPageFinished(view: WebView, url: String) {
+                override fun onPageFinished(view: WebView, url: String) {
+            // --- ADD THIS BLOCK FOR DOCUMENT_END SCRIPTS ---
+            val scriptsToRun = userScriptStore.getActiveScriptsForUrl(url, dev.sk2andy.materialbrowser.data.UserScriptRunAt.DOCUMENT_END)
+            dev.sk2andy.materialbrowser.browser.UserScriptInjector.injectScripts(view, scriptsToRun)
+            // -----------------------------------------------
+
             pageUrls[tabId] = url
             updateNavigationState(tabId, view)
             val title = view.title?.takeIf(String::isNotBlank) ?: AddressResolver.displayText(url)
@@ -3570,7 +3575,7 @@ class BrowserController(
                     isLoading = false,
                     progress = 100,
                 )
-            }
+            }a
             recordHistory(tabId, url, title)
             if (view.url == url && pageUrls[tabId] == url) {
                 updateCandyTrailPage(tabId, url, title)
