@@ -41,6 +41,7 @@ import dev.sk2andy.materialbrowser.capsule.CapsuleLaunchResolution
 import dev.sk2andy.materialbrowser.data.BrowserDownloadRequest
 import dev.sk2andy.materialbrowser.data.GestureOnboardingStore
 import dev.sk2andy.materialbrowser.data.SnoozeWakeNotifier
+import dev.sk2andy.materialbrowser.data.UserScriptStore
 import dev.sk2andy.materialbrowser.ui.BrowserScreen
 import dev.sk2andy.materialbrowser.ui.CandySplashScreen
 import dev.sk2andy.materialbrowser.ui.GestureOnboardingScreen
@@ -52,6 +53,8 @@ import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     private lateinit var browserController: BrowserController
+    private lateinit var userScriptStore: UserScriptStore // Added store property
+
     private val webPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { results ->
@@ -74,8 +77,13 @@ class MainActivity : ComponentActivity() {
         val onboardingStore = GestureOnboardingStore(this)
         val onboardingRequired = onboardingStore.shouldShow()
         val snoozeWakeNotifier = SnoozeWakeNotifier(this).also { it.ensureChannel() }
+        
+        // Initialize UserScriptStore here
+        userScriptStore = UserScriptStore(applicationContext)
+
         browserController = BrowserController(
             activity = this,
+            userScriptStore = userScriptStore, // Pass store to controller
             requestRuntimePermissions = { permissions ->
                 webPermissionLauncher.launch(permissions.toTypedArray())
             },
@@ -151,8 +159,10 @@ class MainActivity : ComponentActivity() {
                     updateCheckCompleted = true
                 }
                 Box {
+                    // Pass the UserScriptStore down to the BrowserScreen UI so Settings can access it
                     BrowserScreen(
                         controller = browserController,
+                        userScriptStore = userScriptStore, // <--- Add this parameter
                         onTabOverviewPortraitLockChanged = ::setTabOverviewPortraitLocked,
                     )
                     if (onboardingVisible) {
