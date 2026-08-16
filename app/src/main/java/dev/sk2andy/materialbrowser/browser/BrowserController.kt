@@ -3518,6 +3518,11 @@ class BrowserController(
 
     private fun browserWebViewClient(tabId: String) = object : WebViewClient() {
         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+            // --- ADD THIS BLOCK FOR DOCUMENT_START SCRIPTS ---
+            val scriptsToRun = userScriptStore.getActiveScriptsForUrl(url, dev.sk2andy.materialbrowser.data.UserScriptRunAt.DOCUMENT_START)
+            dev.sk2andy.materialbrowser.browser.UserScriptInjector.injectScripts(view, scriptsToRun)
+            // -------------------------------------------------
+
             clearPermissionActivity(tabId)
             val capsule = activeCapsuleForTab(tabId)
             if (capsule != null &&
