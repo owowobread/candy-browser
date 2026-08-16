@@ -224,6 +224,7 @@ private class PendingPreviewCapture(
 
 class BrowserController(
     private val activity: Activity,
+    private val userScriptStore: UserScriptStore, // <-- ADDED THIS LINE
     private val requestRuntimePermissions: (Set<String>) -> Unit = { permissions ->
         activity.requestPermissions(permissions.toTypedArray(), WEB_PERMISSION_REQUEST_CODE)
     },
